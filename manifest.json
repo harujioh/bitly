@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "bitly",
   "description": "copy bitly url",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icons": {
     "48": "img/icon_48.png",
     "128": "img/icon_128.png"
