@@ -1,15 +1,16 @@
-var closeTime = 750;
+var closeTimmeout = -1
 
-function closeExtension(){
-  setTimeout(function(){
+function closeExtension(closeTime){
+  clearTimeout(closeTimmeout);
+  closeTimmeout = setTimeout(function(){
     window.close();
   }, closeTime);
 }
 
-function openOptions(){
+function openOptions(closeTime){
   setTimeout(function(){
     chrome.tabs.create({
-      "url": chrome.extension.getURL("options.html"),
+      'url': chrome.extension.getURL('options.html'),
     });
   }, closeTime);
 }
@@ -18,16 +19,20 @@ window.onload = function() {
   chrome.tabs.getSelected(window.id, function (tab) {
     var user = localStorage['login'];
     var apiKey = localStorage['apiKey'];
+    
+    var $status = $('#status');
+    var $qr = $('#qr');
+    
     if(user == '' || apiKey == ''){
-      $('p').text('empty preference');
-      openOptions();
+      $status.text('empty preference');
+      openOptions(750);
       return;
     }
 
     var url = tab.url;
     if(!url.match(/^https?:\/\//)){
-      $('p').text('error');
-      closeExtension();
+      $status.text('error');
+      closeExtension(750);
       return;
     }
 
@@ -41,13 +46,10 @@ window.onload = function() {
              + '&longUrl=' + encodeURIComponent(url),
       success: function(json){
         if(json.status_code != 200){
-          $('p').text('error : ' + json.status_code);
-          openOptions();
+          $status.text('error : ' + json.status_code);
+          openOptions(750);
           return;
         }
-        $('a').text(json.data.url);
-        $('a').attr('title', tab.title);
-        $('a').fadeIn();
 
         var input = document.getElementsByTagName('input');
         if(input.length > 0){
@@ -55,8 +57,25 @@ window.onload = function() {
           input[0].select();
           document.execCommand('copy');
 
-          $('p').text('done copy!');
-          closeExtension();
+          $status.text('done copy!');
+          closeExtension(1500);
+
+          $qr.show().append($('<a>').attr('href', '#').text('create QR').hover(function(){
+            clearTimeout(closeTimmeout);
+          }, function(){
+            closeExtension(1500);
+          }).click(function(){
+            clearTimeout(closeTimmeout);
+
+            $qr.empty().append($('<img>').attr({
+              src : 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURI(json.data.url) + '&size=60x60',
+              width : 60,
+              height : 60,
+              alt : 'QR'
+            }));
+            return false;
+          }));
+
           return;
         }
       }
