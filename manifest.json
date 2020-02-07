@@ -14,7 +14,7 @@
   },
   "permissions": [
     "http://api.bitly.com/",
-    "tabs",
+    "activeTab",
     "clipboardWrite"
   ]
 }
