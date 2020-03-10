@@ -1,10 +1,8 @@
 window.onload = function () {
-  $('#login').val(localStorage['login']);
-  $('#apiKey').val(localStorage['apiKey']);
+  $('#accessToken').val(localStorage['accessToken']);
 
   $('form').submit(function () {
-    localStorage['login'] = $('#login').val();
-    localStorage['apiKey'] = $('#apiKey').val();
+    localStorage['accessToken'] = $('#accessToken').val();
 
     window.close();
   });

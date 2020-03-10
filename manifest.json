@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "bitly",
-  "description": "copy bitly url",
-  "version": "0.0.3",
+  "description": "bit.lyでURLを短縮します。",
+  "version": "0.0.4",
   "icons": {
     "48": "img/icon_48.png",
     "128": "img/icon_128.png"
@@ -14,7 +14,7 @@
   },
   "permissions": [
     "http://api.bitly.com/",
-    "tabs",
+    "activeTab",
     "clipboardWrite"
   ]
 }
