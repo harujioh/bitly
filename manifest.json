@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "bitly",
   "description": "bit.lyでURLを短縮します。",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icons": {
     "48": "img/icon_48.png",
     "128": "img/icon_128.png"
