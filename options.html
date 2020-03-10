@@ -10,6 +10,11 @@
             padding: 0;
         }
 
+        body {
+            width: 500px;
+            margin: 0 auto;
+        }
+
         table {
             margin: 20px auto;
         }
@@ -24,11 +29,12 @@
         }
 
         td:first-child {
-            width: 100px;
+            width: 120px;
+            text-align: center;
         }
 
         td:last-child {
-            width: 200px;
+            width: 300px;
         }
 
         input {
@@ -37,6 +43,18 @@
 
         button {
             padding: 1px 10px;
+            width: 60%;
+        }
+
+        h1 {
+            font-size: 100%;
+            text-align: center;
+            margin: 20px 0 10px;
+        }
+
+        #howto ul {
+            margin: 0 0 0 20px;
+            list-style-type: decimal;
         }
     </style>
 </head>
@@ -45,21 +63,31 @@
     <form>
         <table>
             <tr>
-                <td>login</td>
-                <td><input id="login" /></td>
+                <td>Access Token</td>
+                <td><input id="accessToken" /></td>
             </tr>
             <tr>
-                <td>api key</td>
-                <td><input id="apiKey" /></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" value="save" /></td>
+                <td colspan="2"><button type="submit">save</button></td>
             </tr>
         </table>
     </form>
-    <p><a
-            href="https://app.bitly.com/bitlinks/?actions=accountMain&actions=settings&actions=advancedSettings&actions=apiSupport">Register</a>
-    </p>
+
+    <hr>
+
+    <div id="howto">
+        <h1>アクセストークンの作り方</h1>
+        <ul>
+            <li>
+                <a href="https://app.bitly.com/" target="_blank">bit.ly</a>にアクセスして、右上のプロフィールボタンから、Profile Settingsをクリックする。
+            </li>
+            <li>
+                GoogleやFacebookアカウントでログインしている場合は、Change Passwordでパスワードを設定する。(CURRENT PASSWORDは空欄)
+            </li>
+            <li>
+                Generic Access Tokenを選び、設定したパスワードでトークンを作成する。
+            </li>
+        </ul>
+    </div>
 </body>
 
 </html>

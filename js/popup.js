@@ -17,13 +17,12 @@ function openOptions(closeTime) {
 
 window.onload = function () {
   chrome.tabs.getSelected(window.id, function (tab) {
-    var user = localStorage['login'];
-    var apiKey = localStorage['apiKey'];
+    var accessToken = localStorage['accessToken'];
 
     var $status = $('#status');
     var $qr = $('#qr');
 
-    if (user == '' || apiKey == '') {
+    if (accessToken == '') {
       $status.text('empty preference');
       openOptions(750);
       return;
@@ -37,48 +36,48 @@ window.onload = function () {
     }
 
     $.ajax({
-      type: 'get',
+      type: 'POST',
+      url: 'https://api-ssl.bitly.com/v4/shorten',
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+        'Content-Type': 'application/json'
+      },
       dataType: 'json',
-      url: 'http://api.bitly.com/v3/shorten'
-        + '?login=' + user
-        + '&apiKey=' + apiKey
-        + '&format=json'
-        + '&longUrl=' + encodeURIComponent(url),
-      success: function (json) {
-        if (json.status_code != 200) {
-          $status.text('error : ' + json.status_code);
-          openOptions(750);
-          return;
-        }
+      data: JSON.stringify({
+        long_url: url
+      }),
+      cache: false
+    }).done(function(result){
+      var input = document.getElementsByTagName('input');
+      if (input.length > 0) {
+        input[0].value = result.link;
+        input[0].select();
+        document.execCommand('copy');
 
-        var input = document.getElementsByTagName('input');
-        if (input.length > 0) {
-          input[0].value = json.data.url;
-          input[0].select();
-          document.execCommand('copy');
+        $status.text('done copy!');
+        closeExtension(1500);
 
-          $status.text('done copy!');
+        $qr.show().append($('<a>').attr('href', '#').text('create QR').hover(function () {
+          clearTimeout(closeTimmeout);
+        }, function () {
           closeExtension(1500);
+        }).click(function () {
+          clearTimeout(closeTimmeout);
 
-          $qr.show().append($('<a>').attr('href', '#').text('create QR').hover(function () {
-            clearTimeout(closeTimmeout);
-          }, function () {
-            closeExtension(1500);
-          }).click(function () {
-            clearTimeout(closeTimmeout);
-
-            $qr.empty().append($('<img>').attr({
-              src: 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURI(json.data.url) + '&size=60x60',
-              width: 60,
-              height: 60,
-              alt: 'QR'
-            }));
-            return false;
+          $qr.empty().append($('<img>').attr({
+            src: 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURI(result.link) + '&size=60x60',
+            width: 60,
+            height: 60,
+            alt: 'QR'
           }));
+          return false;
+        }));
 
-          return;
-        }
+        return;
       }
+    }).fail(function(result){
+      $status.text('error : ' + result.status);
+      openOptions(750);
     });
   });
 };
